@@ -1,0 +1,18 @@
+#!/bin/bash
+
+function createStatusAndAppendToFile {
+# $1 is the file to inspect
+# $2 is the file in which the status gets written
+        echo $1
+        echo $2
+}
+
+# create a status file of the given directory in $1 and save it to $2
+# get all files of the given directory $ $1 and create its status
+rm -f $2
+files=`find $1 2>/dev/null`
+for f in $files; do
+        createStatusAndAppendToFile $f $2
+done
+
+exit 0
