@@ -1,18 +1,28 @@
 #!/bin/bash
 
 function createStatusAndAppendToFile {
-# $1 is the file to inspect
-# $2 is the file in which the status gets written
-        echo $1
-        echo $2
+        # $1 is the file to inspect
+        fileToInspect=$1
+        # $2 is the file in which the status gets written
+        fileToWriteTo=$2
+        fileStatus=`ls -l "$fileToInspect"`
+        set -- junk $fileStatus
+        shift
+        permissions=$1
+        owner=$3
+        group=$4
+        size=$5
+        checkSum=`sha1sum "$fileToInspect" | cut --characters=1-40`
+        fileToInspect=`echo "$fileToInspect" | sed 's/ /\\\n/g'`
+        echo $fileToInspect $permissions $owner $group $size $checkSum >> $fileToWriteTo
 }
 
 # create a status file of the given directory in $1 and save it to $2
 # get all files of the given directory $ $1 and create its status
 rm -f $2
-files=`find $1 2>/dev/null`
-for f in $files; do
-        createStatusAndAppendToFile $f $2
+find "$1" -type f -print0 2>/dev/null | while IFS= read -r -d '' filename; do
+        createStatusAndAppendToFile "$filename" $2
+        echo
 done
 
 exit 0
