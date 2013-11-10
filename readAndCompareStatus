@@ -21,7 +21,7 @@ function compareEntries {
                 retStatus=0
         fi
         if [ $fn1 \> $fn2 ]; then
-                local __changes="added file $fn1"
+                local __changes="added file $fn2"
                 retStatus=2
         fi
         echo "$retStatus" "$__changes"
@@ -43,6 +43,8 @@ changes=()
 while [ $index1 -lt $length1 ] && [ $index2 -lt $length2 ]; do
         echo $index1
         echo $index2
+        echo ${status1[$((index1 + 0))]}
+        echo ${status2[$((index2 + 0))]}
         retval=`compareEntries ${status1[$((index1 + 0))]} ${status1[$((index1 + 1))]} ${status1[$((index1 + 2))]} ${status1[$((index1 + 3))]} ${status1[$((index1 + 4))]} ${status1[$((index1 + 5))]} ${status2[$((index2 + 0))]} ${status2[$((index2 + 1))]} ${status2[$((index2 + 2))]} ${status2[$((index2 + 3))]} ${status2[$((index2 + 4))]} ${status2[$((index2 + 5))]}`
         changes[${#changes[@]}]="`echo $retval | cut -c 3-`"
         retval=`echo $retval | cut -c 1-2`
@@ -55,6 +57,25 @@ while [ $index1 -lt $length1 ] && [ $index2 -lt $length2 ]; do
                 index2=$(($index2 + 6))
         fi
 done
+
+# add remaining files, which have been added or deleted
+# $1 is the array of the file
+# $2 the start position
+# $3 if the content is added or removed
+function addAddedDeletedFiles {
+        declare -a tmpvar=("${!1}")
+        for i in $(seq $2 6 $((${#tmpvar[@]} - 1))); do
+                changes[${#changes[@]}]="$3 file ${tmpvar[i]}"
+        done
+}
+
+if [ $index1 -lt $length1 ]; then
+        echo "all items ${status1[@]}"
+        addAddedDeletedFiles status1[@] $index1 "deleted"
+fi
+if [ $index2 -lt $length2 ]; then
+        addAddedDeletedFiles status2[@] $index2 "added"
+fi
 
 for i in $(seq 0 $((${#changes[@]} - 1))); do
         echo ${changes[$i]}
