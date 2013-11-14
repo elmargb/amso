@@ -35,21 +35,12 @@ status2=( $(cat $2) )
 index2=0
 length2=$((${#status2[@]} - 1))
 
-echo $length1
-echo $length2
-
 changes=()
 
 while [ $index1 -lt $length1 ] && [ $index2 -lt $length2 ]; do
-        echo $index1
-        echo $index2
-        echo ${status1[$((index1 + 0))]}
-        echo ${status2[$((index2 + 0))]}
         retval=`compareEntries ${status1[$((index1 + 0))]} ${status1[$((index1 + 1))]} ${status1[$((index1 + 2))]} ${status1[$((index1 + 3))]} ${status1[$((index1 + 4))]} ${status1[$((index1 + 5))]} ${status2[$((index2 + 0))]} ${status2[$((index2 + 1))]} ${status2[$((index2 + 2))]} ${status2[$((index2 + 3))]} ${status2[$((index2 + 4))]} ${status2[$((index2 + 5))]}`
         changes[${#changes[@]}]="`echo $retval | cut -c 3-`"
         retval=`echo $retval | cut -c 1-2`
-        echo $retval
-        echo ${changes[$((${#changes[@]} - 1))]}
         if [ $retval -lt 2 ]; then
                 index1=$(($index1 + 6))
         fi
@@ -77,8 +68,8 @@ if [ $index2 -lt $length2 ]; then
         addAddedDeletedFiles status2[@] $index2 "added"
 fi
 
-for i in $(seq 0 $((${#changes[@]} - 1))); do
-        echo ${changes[$i]}
+for ((i = 0; i < ${#changes[@]}; i++)); do
+        echo "${changes[$i]}"
 done
 
 exit 0
