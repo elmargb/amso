@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# watch the directories /bin, /sbin, /usr/bin and /usr/sbin
+# hardcode statusfiles
+
+# compares the old and the new status of a directory and write the results into
+# the log
+# $1 oldstatus
+# $2 directory name
+function checkDirectory {
+        ./createDirectoryStatus $2 $1~
+        if [ -f $1 ]; then
+                echo "`date` checking $2" >> /var/log/syschecker
+                ./readAndCompareStatus $1 $1~ >> /var/log/syschecker
+        fi
+        mv $1~ $1
+}
+
+checkDirectory binstatus /bin
+checkDirectory sbinstatus /sbin
+checkDirectory usrbinstatus /usr/bin
+checkDirectory usrsbinstatus /usr/sbin
+
+exit 0
