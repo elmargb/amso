@@ -21,7 +21,11 @@ function createStatusAndAppendToFile {
 # get all files of the given directory $ $1 and create its status
 rm -f $2
 find "$1" -type f -print0 2>/dev/null | while IFS= read -r -d '' filename; do
-        createStatusAndAppendToFile "$filename" $2
+        createStatusAndAppendToFile "$filename" $2~
 done
+
+# sort the file
+sort $2~ > $2
+rm $2~
 
 exit 0
