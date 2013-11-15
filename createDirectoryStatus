@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# create the status of a file and write it into another file. the status
+# contains a filename without, whitespace, permissions, owner, group, size and
+# a sha1 checksum
+# $1 file to inspect
+# $2 file to write the status into
 function createStatusAndAppendToFile {
         # $1 is the file to inspect
         fileToInspect=$1
@@ -19,7 +24,6 @@ function createStatusAndAppendToFile {
 
 # create a status file of the given directory in $1 and save it to $2
 # get all files of the given directory $ $1 and create its status
-rm -f $2
 find "$1" -type f -print0 2>/dev/null | while IFS= read -r -d '' filename; do
         createStatusAndAppendToFile "$filename" $2~
 done
