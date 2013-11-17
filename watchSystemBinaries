@@ -151,9 +151,12 @@ function checkDirectory {
         mv $1~ $1
 }
 
-checkDirectory binstatus /bin
-checkDirectory sbinstatus /sbin
-checkDirectory usrbinstatus /usr/bin
-checkDirectory usrsbinstatus /usr/sbin
+statusfiles=("binstatus" "sbinstatus" "usrbinstatus" "usrsbinstatus")
+directories=("/bin" "/sbin" "/usr/bin" "/usr/sbin")
+
+for ((j = 0; j < ${#statusfiles[@]}; j++)); do
+        echo $j
+        checkDirectory ${statusfiles[j]} ${directories[j]}
+done
 
 exit 0
