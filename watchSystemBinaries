@@ -140,23 +140,25 @@ function readAndCompareStatus {
 
 # compares the old and the new status of a directory and write the results into
 # the log
-# $1 oldstatus
-# $2 directory name
+# $1 directory name
+# $2 logfile
+# $3 directory containing statusfiles
 function checkDirectory {
-        createDirectoryStatus $2 $1~
+        statusfile="${3}/`echo "$1" | sed 's/\///g'`_status"
+        createDirectoryStatus $1 ${statusfile}~
         if [ -f $1 ]; then
-                echo "`date` checking $2" >> /var/log/syschecker
-                readAndCompareStatus $1 $1~ >> /var/log/syschecker
+                echo "`date` checking $1" >> "$2"
+                readAndCompareStatus $statusfile ${statusfile}~ >> "$2"
         fi
-        mv $1~ $1
+        mv ${statusfile}~ $statusfile
 }
 
-statusfiles=("binstatus" "sbinstatus" "usrbinstatus" "usrsbinstatus")
 directories=("/bin" "/sbin" "/usr/bin" "/usr/sbin")
+logfile="/var/log/syschecker"
+statusdir="."
 
-for ((j = 0; j < ${#statusfiles[@]}; j++)); do
-        echo $j
-        checkDirectory ${statusfiles[j]} ${directories[j]}
+for dir in ${directories[@]}; do
+        checkDirectory $dir $logfile $statusdir
 done
 
 exit 0
