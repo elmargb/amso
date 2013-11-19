@@ -135,9 +135,6 @@ function readAndCompareStatus {
         done
 }
 
-# watch the directories /bin, /sbin, /usr/bin and /usr/sbin
-# hardcode statusfiles
-
 # compares the old and the new status of a directory and write the results into
 # the log
 # $1 directory name
@@ -153,9 +150,71 @@ function checkDirectory {
         mv ${statusfile}~ $statusfile
 }
 
-directories=("/bin" "/sbin" "/usr/bin" "/usr/sbin")
+function showhelp {
+echo "watch given directories and report changes to the files. the changes"
+echo "concern the owner, group, permissions and contents of a file."
+echo "furthermore added and deleted files are reported."
+echo ""
+echo "-d DIRECTORY, --dir DIRECTORY"
+echo "                 add directory to monitor. if no directory is given, the"
+echo "                 following directories are monitored:"
+echo "                 /bin, /sbin, /usr/bin and /usr/sbin"
+echo "-l FILE, --logfile FILE"
+echo "                 file to write the log into (default: /var/log/syschecker)"
+echo "-s DIRECTORY, --statusdir DIRECTORY"
+echo "                 directory to write the statusfiles of the directories into"
+echo "                 (default /var/tmp)"
+echo "-h, --help       prints this help message"
+echo ""
+echo "examples:"
+echo "watchFiles -d /home -d /media -l ~/userfiles"
+echo "monitores the directories /home and /media and writes changes into userfiles in the home directory of the executing user"
+echo ""
+echo "watchFiles -d /boot -s /tmp"
+echo "monitores /boot and writes statusfiles into /tmp"
+}
+
+declare -a directories
 logfile="/var/log/syschecker"
-statusdir="."
+statusdir="/var/tmp"
+
+ARGS=$(getopt -o d:l:s:h -l "dir:,logfile:,statusdir:,help" -n "watchFiles" -- "$@");
+eval set -- "$ARGS"
+
+while true; do
+        case "$1" in
+                -d|--dir)
+                        shift;
+                        directories[${#directories[@]}]="$1"
+                        shift;
+                        ;;
+                -l|--logfile)
+                        shift;
+                        logfile="$1"
+                        shift;
+                        ;;
+                -s|--statusdir)
+                        shift;
+                        statusdir="$1"
+                        shift;
+                        ;;
+                -h|--help)
+                        shift;
+                        showhelp
+                        exit 0
+                        ;;
+                --)
+                        shift;
+                        break;
+                        ;;
+        esac
+done
+
+if [ ${#directories[@]} -eq 0 ]; then
+        directories=("/bin" "/sbin" "/usr/bin" "/usr/sbin")
+fi
+
+exit 0
 
 for dir in ${directories[@]}; do
         checkDirectory $dir $logfile $statusdir
