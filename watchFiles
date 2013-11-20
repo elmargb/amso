@@ -153,7 +153,8 @@ function checkDirectory {
 function showhelp {
 echo "watch given directories and report changes to the files. the changes"
 echo "concern the owner, group, permissions and contents of a file."
-echo "furthermore added and deleted files are reported."
+echo "furthermore added and deleted files are reported. At the first run a"
+echo "statusfile is created for each given directory and nothing reported."
 echo ""
 echo "-d DIRECTORY, --dir DIRECTORY"
 echo "                 add directory to monitor. if no directory is given, the"
