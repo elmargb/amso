@@ -1,0 +1,46 @@
+.\" Process this file with
+.\" groff -man -Tascii foo.1
+.\"
+.TH WATCHFILES 1 "NOVEMBER 2013" Linux "User Manuals"
+.SH NAME
+watchFiles \- keep track of changes in given directories
+.SH SYNOPSIS
+.B watchFiles [-d
+.I directory
+.B ] [-l
+.I logfile
+.B ] [-s
+.I statusdirectory
+.B ]
+.SH DESCRIPTION
+.B watchFiles
+creates a status of each given directory and any subdirectory and
+stores the status in a file. In later runs the old status is compared
+with the new status and changes will be reported to a logfile. The
+status keeps track of changing content, size, permissions, ownership
+and group ownership. If no option is given the directories /bin, /sbin,
+/usr/bin and /usr/sbin will be watched. The statusfiles will be kept in
+/var/tmp and the changes written to /var/log/syschecker unless
+specified otherwise
+.SH OPTIONS
+.IP "-d directory"
+Add
+.I directory
+to keep track of. If no directory is specified /bin, /sbin, /usr/bin
+and /usr/sbin will be watched
+.IP "-l logfile"
+Write changes into
+.I logfile
+(default /var/log/syschecker)
+.IP "-s statusdirectory"
+Save the status of the given directories in
+.I statusdirectory
+(default /var/tmp)
+.IP -h
+Display a help message and exit
+.SH EXAMPLES
+.IP "watchFiles -d /home -d /media -l ~/userfiles"
+monitores the directories /home and /media and writes changes into userfiles in the home directory of the executing user
+
+.IP "watchFiles -d /boot -s /tmp"
+monitores /boot and writes statusfiles into /tmp
