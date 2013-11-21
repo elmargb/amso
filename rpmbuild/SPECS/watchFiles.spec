@@ -23,9 +23,9 @@ cp watchFiles $RPM_BUILD_ROOT/usr/bin
 cp watchFiles.1 $RPM_BUILD_ROOT/usr/share/man/man1
 
 %clean
+rm -rf $RPM_BUILD_ROOT/../../tmp/%{name}
+rm -rf $RPM_BUILD_ROOT/../../BUILD/%{name}
 rm -rf $RPM_BUILD_ROOT
-rm -rf %{_tmppath}/%{name}
-rm -rf %{_topdir}/BUILD/%{name}
 
 %files
 %{_mandir}/man1/watchFiles.1.gz
