@@ -143,9 +143,12 @@ function readAndCompareStatus {
 function checkDirectory {
         statusfile="${3}/`echo "$1" | sed 's/\///g'`_status"
         createDirectoryStatus $1 ${statusfile}~
-        if [ -f $1 ]; then
+        if [ -f $statusfile ]; then
+                echo "comparing against old status"
                 echo "`date` checking $1" >> "$2"
                 readAndCompareStatus $statusfile ${statusfile}~ >> "$2"
+        else
+                echo "creating new status"
         fi
         mv ${statusfile}~ $statusfile
 }
@@ -214,8 +217,6 @@ done
 if [ ${#directories[@]} -eq 0 ]; then
         directories=("/bin" "/sbin" "/usr/bin" "/usr/sbin")
 fi
-
-exit 0
 
 for dir in ${directories[@]}; do
         checkDirectory $dir $logfile $statusdir
