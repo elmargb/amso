@@ -17,7 +17,11 @@ function createStatusAndAppendToFile {
         owner=$3
         group=$4
         size=$5
-        checkSum=`sha1sum "$fileToInspect" | cut --characters=1-40`
+        if [ -r $fileToInspect ]; then
+                checkSum=`sha1sum "$fileToInspect" | cut --characters=1-40`
+        else
+                checkSum="file_not_readable"
+        fi
         fileToInspect=`echo "$fileToInspect" | sed 's/ /\\\n/g'`
         echo $fileToInspect $permissions $owner $group $size $checkSum >> $fileToWriteTo
 }
