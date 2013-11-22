@@ -19,8 +19,10 @@ of added and deleted files, changed ownership, permissions, size or content.
 %install
 mkdir -p $RPM_BUILD_ROOT/usr/bin
 mkdir -p $RPM_BUILD_ROOT/usr/share/man/man1
+mkdir -p $RPM_BUILD_ROOT/var/log
 cp watchFiles $RPM_BUILD_ROOT/usr/bin
 cp watchFiles.1 $RPM_BUILD_ROOT/usr/share/man/man1
+cp syschecker $RPM_BUILD_ROOT/var/log
 
 %clean
 rm -rf $RPM_BUILD_ROOT/../../tmp/%{name}
@@ -30,6 +32,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %{_mandir}/man1/watchFiles.1.gz
 %{_bindir}/watchFiles
+%attr(666, root, root) /var/log/syschecker
 
 %changelog
 * Tue Nov 21 2013 Lutz <dgf@iera.de> 1.0-0
